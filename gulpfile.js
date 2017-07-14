@@ -1,15 +1,12 @@
 var gulp = require('gulp');
-var jade = require('gulp-jade');
-var sass = require('gulp-sass');
-var plumber = require('gulp-plumber');
-var postcss = require('gulp-postcss');
+var $ = require('gulp-load-plugins')();
 var autoprefixer = require('autoprefixer');
 
 
 gulp.task('jade', function () {
     gulp.src('./source/**/*.jade')
-        .pipe(plumber())
-        // .pipe(jade({
+        .pipe($.plumber())
+        // .pipe($.jade({
         //     pretty: true // 無壓縮
         // }))
         .pipe(gulp.dest('./public/'))
@@ -22,10 +19,10 @@ gulp.task('sass', function () {
         }),
     ];
     return gulp.src(['./source/scss/**/*.sass', './source/scss/**/*.scss'])
-        .pipe(plumber())
-        .pipe(sass().on('error', sass.logError))
+        .pipe($.plumber())
+        .pipe($.sass().on('error', $.sass.logError))
         // 編譯完成 CSS
-        .pipe(postcss(plugins))
+        .pipe($.postcss(plugins))
         .pipe(gulp.dest('./public/css'));
 });
 
