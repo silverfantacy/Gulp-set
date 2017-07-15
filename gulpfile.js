@@ -99,6 +99,13 @@ gulp.task('browser-sync', function() {
     });
 });
 
+//壓縮圖片
+gulp.task('image-min', () =>
+    gulp.src('./source/images/*')
+        .pipe($.if(options.env === 'production', $.imagemin())) //產品化時再壓縮
+        .pipe(gulp.dest('./public/images'))
+);
+
 //監控
 gulp.task('watch', function () {
     gulp.watch('./source/scss/**/*.scss', ['sass']);
@@ -107,7 +114,7 @@ gulp.task('watch', function () {
     gulp.watch('./source/js/**/*.js', ['babel']);
 });
 //發佈流程
-gulp.task('build', gulpSequence('clean', 'jade', 'sass', 'babel', 'vendorJs'))
+gulp.task('build', gulpSequence('clean', 'jade', 'sass', 'babel', 'vendorJs', 'image-min'))
 
 //依序執行
-gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'browser-sync', 'watch']);
+gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'browser-sync', 'image-min', 'watch']);
