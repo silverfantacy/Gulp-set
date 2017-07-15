@@ -4,6 +4,7 @@ var autoprefixer = require('autoprefixer');
 var mainBowerFiles = require('main-bower-files');
 var browserSync = require('browser-sync').create();
 var minimist = require('minimist');
+var gulpSequence = require('gulp-sequence');
 
 var envOptions = {
     string: 'env', 
@@ -11,6 +12,12 @@ var envOptions = {
 }
 
 var options = minimist(process.argv.slice(2), envOptions)
+
+//清除
+gulp.task('clean', function () {
+    return gulp.src(['./.tmp', './public'], {read: false})
+        .pipe($.clean());
+});
 
 //Jade
 gulp.task('jade', function () {
@@ -99,5 +106,8 @@ gulp.task('watch', function () {
     gulp.watch('./source/**/*.jade', ['jade']);
     gulp.watch('./source/js/**/*.js', ['babel']);
 });
+//發佈流程
+gulp.task('build', gulpSequence('clean', 'jade', 'sass', 'babel', 'vendorJs'))
+
 //依序執行
 gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'browser-sync', 'watch']);
