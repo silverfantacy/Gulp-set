@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var autoprefixer = require('autoprefixer');
-
+var mainBowerFiles = require('main-bower-files');
 
 gulp.task('jade', function () {
     gulp.src('./source/**/*.jade')
@@ -40,6 +40,17 @@ gulp.task('babel', () => {
         .pipe(gulp.dest('./public/js'));
 });
 
+gulp.task('bower', function() {
+    return gulp.src(mainBowerFiles())
+        .pipe(gulp.dest('./.tmp/vendors'))
+});
+
+gulp.task('vendorJs', ['bower'], function(){  // [優先執行的排程]
+    return gulp.src('./.tmp/vendors/**/**.js')
+        .pipe($.concat('vendors.js'))//合併js
+        .pipe(gulp.dest('./public/js'));
+})
+
 //監控
 gulp.task('watch', function () {
     gulp.watch('./source/scss/**/*.scss', ['sass']);
@@ -48,4 +59,4 @@ gulp.task('watch', function () {
     gulp.watch('./source/js/**/*.js', ['babel']);
 });
 //依序執行
-gulp.task('default', ['jade', 'sass', 'babel', 'watch']);
+gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'watch']);
