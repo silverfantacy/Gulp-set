@@ -2,7 +2,9 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var autoprefixer = require('autoprefixer');
 var mainBowerFiles = require('main-bower-files');
+var browserSync = require('browser-sync').create();
 
+//Jade
 gulp.task('jade', function () {
     gulp.src('./source/**/*.jade')
         .pipe($.plumber())
@@ -10,8 +12,10 @@ gulp.task('jade', function () {
             pretty: true // 無壓縮
         }))
         .pipe(gulp.dest('./public/'))
+        .pipe(browserSync.stream()); //輸出後重新整理
 });
 
+//SASS
 gulp.task('sass', function () {
     var plugins = [
         autoprefixer({
@@ -25,7 +29,8 @@ gulp.task('sass', function () {
         // 編譯完成 CSS
         .pipe($.postcss(plugins))
         .pipe($.sourcemaps.write('.')) //顯示檔案位置
-        .pipe(gulp.dest('./public/css'));
+        .pipe(gulp.dest('./public/css'))
+        .pipe(browserSync.stream());
 });
 
 //ES6
@@ -37,19 +42,40 @@ gulp.task('babel', () => {
         }))
         .pipe($.concat('all.js')) //合併js
         .pipe($.sourcemaps.write('.')) //顯示檔案位置
-        .pipe(gulp.dest('./public/js'));
+        .pipe(gulp.dest('./public/js'))
+        .pipe(browserSync.stream());
 });
 
+//Bower 取得檔案
 gulp.task('bower', function() {
     return gulp.src(mainBowerFiles())
         .pipe(gulp.dest('./.tmp/vendors'))
+    return gulp.src(mainBowerFiles({
+        "overrides": {
+            "vue": {                       // 套件名稱
+                "main": "dist/vue.js"      // 取用的資料夾路徑
+            }
+        }
+    }))
+        .pipe(gulp.dest('./.tmp/vendors'));
+        cb(err);
 });
 
+//Bower 整合檔案
 gulp.task('vendorJs', ['bower'], function(){  // [優先執行的排程]
     return gulp.src('./.tmp/vendors/**/**.js')
         .pipe($.concat('vendors.js'))//合併js
         .pipe(gulp.dest('./public/js'));
 })
+
+// Static server
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./public"
+        }
+    });
+});
 
 //監控
 gulp.task('watch', function () {
@@ -59,4 +85,4 @@ gulp.task('watch', function () {
     gulp.watch('./source/js/**/*.js', ['babel']);
 });
 //依序執行
-gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'watch']);
+gulp.task('default', ['jade', 'sass', 'babel', 'vendorJs', 'browser-sync', 'watch']);
