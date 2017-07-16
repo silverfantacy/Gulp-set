@@ -113,6 +113,13 @@ gulp.task('watch', function () {
     gulp.watch('./source/**/*.jade', ['jade']);
     gulp.watch('./source/js/**/*.js', ['babel']);
 });
+
+//Github
+gulp.task('deploy', function() {
+  return gulp.src('./public/**/*')
+    .pipe($.ghPages());
+});
+
 //發佈流程
 gulp.task('build', gulpSequence('clean', 'jade', 'sass', 'babel', 'vendorJs', 'image-min'))
 
