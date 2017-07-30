@@ -1,4 +1,5 @@
 .tmp
+.publish
 bower_components
 public
 node_modules

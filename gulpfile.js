@@ -24,11 +24,11 @@ gulp.task('jade', function () {
     gulp.src('./source/**/*.jade')
         .pipe($.plumber())
         .pipe($.data(function(){
-            var khData = require('./source/data/data.json');
-            var menu = require('./source/data/menu.json');
+            // var khData = require('./source/data/data.json');
+            var area = require('./source/data/areaList.json');
             var source = {
-                'khData': khData,
-                'menu': menu 
+                // 'khData': khData,
+                'area': area 
             };
             return source;
         }))
@@ -78,8 +78,6 @@ gulp.task('babel', () => {
 
 //Bower 取得檔案
 gulp.task('bower', function() {
-    return gulp.src(mainBowerFiles())
-        .pipe(gulp.dest('./.tmp/vendors'))
     return gulp.src(mainBowerFiles({
         "overrides": {
             "vue": {                       // 套件名稱
@@ -94,6 +92,13 @@ gulp.task('bower', function() {
 //Bower 整合檔案
 gulp.task('vendorJs', ['bower'], function(){  // [優先執行的排程]
     return gulp.src('./.tmp/vendors/**/**.js')
+        .pipe($.order([
+            'jquery.js',
+            'tether.js',
+            'bootstrap.js',
+            'vue.js',
+            '**/*.js'
+        ]))
         .pipe($.concat('vendors.js'))//合併js
         .pipe($.if(options.env === 'production', $.uglify()))
         .pipe(gulp.dest('./public/js'));

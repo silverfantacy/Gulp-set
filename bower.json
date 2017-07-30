@@ -1,12 +1,12 @@
 {
-  "name": "project-gulp",
+  "name": "project-disaster-prevention",
   "description": "",
   "main": "index.js",
   "authors": [
     "Zero <silverfantacy@gmail.com>"
   ],
   "license": "ISC",
-  "homepage": "",
+  "homepage": "https://github.com/silverfantacy/Disaster-Prevention",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,7 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "v4.0.0-alpha.6",
     "jquery": "^3.2.1",
     "vue": "^2.4.1"
   }
